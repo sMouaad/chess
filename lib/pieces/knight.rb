@@ -2,9 +2,12 @@ require_relative '../piece'
 
 # Knight class for the knight piece containing graph representation of possible moves for a knight
 class Knight < Piece
+  attr_reader :symbol
+
   MOVES_OFFSETS = [1, -1].product([2, -2]) + [2, -2].product([1, -1])
   def initialize(color)
     super
+    @symbol = Piece::PIECES[:knight].colorize(color)
     @graph = initialize_graph
   end
 
