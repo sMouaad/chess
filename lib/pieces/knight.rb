@@ -1,26 +1,24 @@
-require_relative '../piece'
+# frozen_string_literal: true
 
-# Knight class for the knight piece containing graph representation of possible moves for a knight
+require_relative '../piece'
+# Knight class for the knight piece
 class Knight < Piece
   attr_reader :symbol
 
   MOVES_OFFSETS = [1, -1].product([2, -2]) + [2, -2].product([1, -1])
-  def initialize(color)
+  def initialize(color, coordinates)
     super
     @symbol = Piece::PIECES[:knight].colorize(color)
-    @graph = initialize_graph
   end
 
-  def initialize_graph
-    graph = Array.new(8) { [] }.map! { Array.new(8) { [] } }
-    8.times do |x|
-      8.times do |y|
-        MOVES_OFFSETS.each do |offset|
-          final_position = [x + offset[0], y + offset[1]]
-          graph[x][y] << final_position if final_position.all? { |element| element.between?(0, 7) }
-        end
-      end
+  # Calculate possible next moves in current position
+  def next_moves
+    moves = []
+    row, column = to_index(coordinates)
+    MOVES_OFFSETS.each do |offset|
+      final_position = [row + offset.first, column + offset.last]
+      moves << final_position if correct_index?(final_position)
     end
-    graph
+    moves
   end
 end
