@@ -15,4 +15,16 @@ class Piece
 
     color != piece.color
   end
+
+  def rank
+    coordinates_rank(coordinates)
+  end
+
+  def file
+    coordinates_file(coordinates)
+  end
+
+  def to_s
+    self.class.to_s
+  end
 end

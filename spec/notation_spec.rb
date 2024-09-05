@@ -117,5 +117,11 @@ describe Notation do
     it 'converts row 7, column 7 to "h8"' do
       expect(to_coordinates(7, 7)).to eq('h8')
     end
+    it 'converts row 3, column 5 to "f4"' do
+      expect(to_coordinates(3, 5)).to eq('f4')
+    end
+    it 'converts row 1, column 3 to "d2"' do
+      expect(to_coordinates(1, 3)).to eq('d2')
+    end
   end
 end
