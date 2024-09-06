@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Notation module that contains operations on algebraic notation and indexes
 module Notation
   NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?$/.freeze
   CASTLE_NOTATION = /^O-O(?:-O)?$/.freeze
@@ -27,13 +30,13 @@ module Notation
   def coordinates_rank(coordinates)
     raise ArgumentError unless coordinates.is_a?(String) && correct_coordinates?(coordinates)
 
-    coordinates[0]
+    coordinates[1]
   end
 
   def coordinates_file(coordinates)
     raise ArgumentError unless coordinates.is_a?(String) && correct_coordinates?(coordinates)
 
-    coordinates[1]
+    coordinates[0]
   end
 
   def correct_coordinates?(coordinates)

@@ -1,7 +1,7 @@
 require './lib/notation'
 describe Notation do
   include Notation
-  describe '#to_parse_notation' do
+  describe '#parse_notation' do
     describe 'simple pawn moves' do
       it 'validates e4' do
         expect(parse_notation('e4')).to_not eql nil
