@@ -27,6 +27,12 @@ module Notation
     algebraic.match(NOTATION) || algebraic.match(CASTLE_NOTATION)
   end
 
+  def correct_notation?(algebraic)
+    raise ArgumentError unless algebraic.is_a? String
+
+    algebraic.match?(NOTATION) || algebraic.match?(CASTLE_NOTATION)
+  end
+
   def coordinates_rank(coordinates)
     raise ArgumentError unless coordinates.is_a?(String) && correct_coordinates?(coordinates)
 

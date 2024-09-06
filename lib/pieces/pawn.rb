@@ -14,24 +14,24 @@ class Pawn < Piece
     @en_passant = false
   end
 
-  def next_moves
+  def next_moves(board)
     moves = []
     row, column = to_index(coordinates)
     offset = (color == Board::PLAYER_ONE ? MOVE_OFFSETS_ONE : MOVE_OFFSETS_TWO)
     final_position = [row + offset, column]
-    moves << final_position if correct_index?(final_position) && yield(final_position)
-    moves << [row + (offset * 2), column] if rank == RANK[offset] && yield(final_position)
+    moves << final_position if correct_index?(final_position) && empty_square?(board, final_position)
+    moves << [row + (offset * 2), column] if rank == RANK[offset] && empty_square?(board, final_position)
 
     moves
   end
 
-  def capture_moves
+  def capture_moves(board)
     moves = []
     row, column = to_index(coordinates)
     offset = (color == Board::PLAYER_ONE ? MOVE_OFFSETS_ONE : MOVE_OFFSETS_TWO)
     [column + offset, column - offset].each do |column_offset|
       final_position = [row + offset, column_offset]
-      moves << final_position if correct_index?(final_position) && yield(final_position)
+      moves << final_position if correct_index?(final_position) && enemy_square?(board, final_position)
     end
     moves
   end

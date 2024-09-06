@@ -1,7 +1,10 @@
 require_relative 'notation'
+require_relative 'move_validator'
 require_relative 'board'
 class Piece
   include Notation
+  include MoveValidator
+
   attr_reader :coordinates, :color
 
   PIECES = { knight: '♞', queen: '♛', king: '♚', rook: '♜', bishop: '♝', pawn: '♟' }.freeze
