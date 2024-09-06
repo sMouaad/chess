@@ -11,6 +11,8 @@ class King < Piece
     @can_castle = true
   end
 
+  protected
+
   def next_moves(board)
     moves = []
     row, column = to_index(coordinates)
@@ -22,10 +24,5 @@ class King < Piece
                                                                                   ))
     end
     moves
-  end
-
-  def empty_or_enemy?(board, position)
-    piece_board = board.piece_at(*position)
-    piece_board.nil? || piece.enemy?(piece_board)
   end
 end

@@ -16,7 +16,8 @@ class Game
   def start
     loop do
       @board.print_board
-      play
+      initial_pos, final_pos = play
+      @board.piece_move(initial_pos, final_pos)
     end
   end
 
@@ -24,31 +25,35 @@ class Game
     (current_player.zero? ? Board::PLAYER_ONE : Board::PLAYER_TWO)
   end
 
+  # returns hash with key as initial position and value as all possible moves
   def next_moves
-    moves = []
+    all_moves = {}
     @board.data.compact.each do |file|
       file.compact.each do |piece|
         next unless piece.color == current_player_color # To get moves of the current player
 
-        moves << piece.next_moves_algebraic(@board)
+        initial_coordinate, moves = piece.next_moves_algebraic(@board)
+        all_moves[initial_coordinate] = moves unless moves.empty?
       end
     end
-    moves.flatten
+    all_moves
   end
 
   def play
-    possible_moves = next_moves
+    moves = next_moves
+    possible_moves = moves.values.flatten
     player = @player[current_player]
     player_move = player.play(possible_moves)
     loop do
-      p "#{possible_moves} #{player_move}"
-      return player_move if possible_moves.include? player_move
+      break if possible_moves.include? player_move
 
       puts 'Illegal move, try again...'
-      player_move = player.play(possible_moves)
+      player_move = player.play(moves)
     end
     next_player_turn
-    player_move
+    found_value = nil
+    moves.each_value { |element| found_value = element if element.include? player_move }
+    [moves.key(found_value), parse_notation(player_move)[:final_position]].map { |element| to_index(element) }
   end
 
   # current_player can only have 0 or 1 as values, 0 : player_one, 1 : player_two

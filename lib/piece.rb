@@ -28,6 +28,19 @@ class Piece
     coordinates_file(coordinates)
   end
 
+  def next_moves_algebraic(board)
+    moves = next_moves(board).map do |move|
+      move_to_algebraic(board, self, move) + (check?(board, to_index(coordinates), move) ? '+' : '')
+    end
+    [coordinates, moves]
+  end
+
+  def to_s
+    self.class.to_s
+  end
+
+  protected
+
   # Method for Queen, Rook, Bishop to inherit due to them having the same logic, to be overridden in other pieces
   def next_moves(board)
     moves = []
@@ -44,15 +57,5 @@ class Piece
       moves << next_position if correct_index?(next_position) && enemy_square?(board, next_position)
     end
     moves
-  end
-
-  def next_moves_algebraic(board)
-    next_moves(board).map do |move|
-      move_to_algebraic(board, self, move) + (check?(board, to_index(coordinates), move) ? '+' : '')
-    end
-  end
-
-  def to_s
-    self.class.to_s
   end
 end

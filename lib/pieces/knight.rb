@@ -12,6 +12,8 @@ class Knight < Piece
     @notation = 'N'
   end
 
+  protected
+
   # Calculate possible next moves in current position
   def next_moves(board)
     moves = []

@@ -3,6 +3,5 @@ class Player
     @color = color
   end
 
-  def play
-  end
+  def play; end
 end
