@@ -5,7 +5,8 @@ class Piece
   include Notation
   include MoveValidator
 
-  attr_reader :coordinates, :color
+  attr_reader :color
+  attr_accessor :coordinates
 
   PIECES = { knight: '♞', queen: '♛', king: '♚', rook: '♜', bishop: '♝', pawn: '♟' }.freeze
   def initialize(color, coordinates)
@@ -43,6 +44,12 @@ class Piece
       moves << next_position if correct_index?(next_position) && enemy_square?(board, next_position)
     end
     moves
+  end
+
+  def next_moves_algebraic(board)
+    next_moves(board).map do |move|
+      move_to_algebraic(board, self, move) + (check?(board, to_index(coordinates), move) ? '+' : '')
+    end
   end
 
   def to_s

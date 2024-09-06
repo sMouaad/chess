@@ -30,9 +30,10 @@ class Game
       file.compact.each do |piece|
         next unless piece.color == current_player_color # To get moves of the current player
 
-        piece.next_moves(@board)
+        moves << piece.next_moves_algebraic(@board)
       end
     end
+    moves.flatten
   end
 
   def play
@@ -53,12 +54,6 @@ class Game
   # current_player can only have 0 or 1 as values, 0 : player_one, 1 : player_two
   def next_player_turn
     @current_player = (current_player + 1) % 2
-  end
-
-  def print_capture(piece, piece_move)
-    return if @board.piece_at(*piece_move).nil?
-
-    "#{piece.rank if piece.is_a?(Pawn)}x"
   end
 end
 

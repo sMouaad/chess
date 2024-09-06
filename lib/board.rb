@@ -38,6 +38,14 @@ class Board
     puts '  a b c d e f g h'
   end
 
+  def piece_move(initial_pos, final_pos)
+    initial_row, initial_column = initial_pos
+    final_row, final_column = final_pos
+    data[final_row][final_column] = data[initial_row][initial_column]
+    data[initial_row][initial_column] = nil
+    piece_at(*final_pos).coordinates = to_coordinates(*final_pos)
+  end
+
   def piece_at(position, position_opt = nil)
     if position_opt.nil?
       row, column = to_index(position)

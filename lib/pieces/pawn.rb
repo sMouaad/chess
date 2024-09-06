@@ -20,9 +20,9 @@ class Pawn < Piece
     offset = (color == Board::PLAYER_ONE ? MOVE_OFFSETS_ONE : MOVE_OFFSETS_TWO)
     final_position = [row + offset, column]
     moves << final_position if correct_index?(final_position) && empty_square?(board, final_position)
-    moves << [row + (offset * 2), column] if rank == RANK[offset] && empty_square?(board, final_position)
-
-    moves
+    final_position = [row + (offset * 2), column]
+    moves << final_position if rank == RANK[offset] && empty_square?(board, final_position)
+    moves + capture_moves(board)
   end
 
   def capture_moves(board)

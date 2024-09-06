@@ -45,7 +45,19 @@ module Notation
     coordinates[0]
   end
 
+  def move_to_algebraic(board, piece, move)
+    "#{piece.notation}#{print_capture(board, piece, move)}#{to_coordinates(*move)}"
+  end
+
   def correct_coordinates?(coordinates)
     coordinates.match?(COORDINATES)
+  end
+
+  private
+
+  def print_capture(board, piece, piece_move)
+    return if board.piece_at(*piece_move).nil?
+
+    "#{piece.file if piece.is_a?(Pawn)}x"
   end
 end
