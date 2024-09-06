@@ -28,16 +28,11 @@ class Game
     moves = []
     @board.data.compact.each do |file|
       file.compact.each do |piece|
-        next unless piece.color == current_player_color
+        next unless piece.color == current_player_color # To get moves of the current player
 
-        piece_moves = piece.next_moves(@board)
-        piece_moves_algebraic = piece_moves.map do |piece_move|
-          "#{piece.notation}#{print_capture(piece, piece_move)}#{to_coordinates(*piece_move)}"
-        end
-        moves << [piece_moves_algebraic]
+        piece.next_moves(@board)
       end
     end
-    p moves.flatten
   end
 
   def play
