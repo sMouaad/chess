@@ -16,19 +16,24 @@ class Game
   def start
     loop do
       @board.print_board
-      initial_pos, parsed_notation = play # Now, the current player is the next player
+      initial_pos, parsed_notation = play
       if initial_pos.nil?
         puts 'Checkmate!'
         return
+      elsif initial_pos == :short_castle
+        @board.short_castle(current_player_color)
+      elsif initial_pos == :long_castle
+        @board.long_castle(current_player_color)
+      else
+        final_pos = to_index(parsed_notation[:final_position])
+        @board.piece_move(to_index(initial_pos), final_pos)
       end
-      final_pos = to_index(parsed_notation[:final_position])
-      @board.king(current_player_color).can_castle = false if @board.piece_at(*initial_pos).is_a? King
-      @board.piece_move(initial_pos, final_pos)
+      next_player_turn
     end
   end
 
   def current_player_color
-    (current_player.zero? ? Board::PLAYER_ONE : Board::PLAYER_TWO)
+    current_player.zero? ? Board::PLAYER_ONE : Board::PLAYER_TWO
   end
 
   # returns hash with key as initial position and value as all possible moves
@@ -42,6 +47,9 @@ class Game
         all_moves[initial_coordinate] = moves unless moves.empty?
       end
     end
+    king = @board.king(current_player_color)
+    all_moves[:long_castle] = 'O-O-O' if king.can_castle_long?(@board)
+    all_moves[:short_castle] = 'O-O' if king.can_castle_short?(@board)
     all_moves
   end
 
@@ -58,10 +66,9 @@ class Game
       puts 'Illegal move, try again...'
       player_move = player.play(moves)
     end
-    next_player_turn
     found_value = nil
     moves.each_value { |element| found_value = element if element.include? player_move }
-    [to_index(moves.key(found_value)), parse_notation(player_move)]
+    [moves.key(found_value), parse_notation(player_move)]
   end
 
   # current_player can only have 0 or 1 as values, 0 : player_one, 1 : player_two

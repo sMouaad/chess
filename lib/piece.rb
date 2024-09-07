@@ -7,11 +7,17 @@ class Piece
 
   attr_reader :color
   attr_accessor :coordinates
+  attr_writer :moved
 
   PIECES = { knight: '♞', queen: '♛', king: '♚', rook: '♜', bishop: '♝', pawn: '♟' }.freeze
   def initialize(color, coordinates)
     @color = color
+    @moved = false
     @coordinates = coordinates # coordinates (e.g: h1 d3 f4)
+  end
+
+  def moved?
+    @moved
   end
 
   def enemy?(piece)

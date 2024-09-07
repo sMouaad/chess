@@ -38,20 +38,23 @@ module MoveValidator
   def short_castle_blocked?(board, color)
     rank = color == Board::PLAYER_ONE ? 0 : 7
     enemy = color == Board::PLAYER_ONE ? Board::PLAYER_TWO : Board::PLAYER_ONE
-    is_hallway_free = board.piece_at?(rank, 5).nil? && board.piece_at?(rank, 6).nil?
+    is_hallway_free = board.piece_at(rank, 5).nil? && board.piece_at(rank, 6).nil?
+    rook = board.piece_at(rank, 7)
     board.each_piece(enemy).any? do |piece|
-      piece_moves = piece.next_moves
+      piece_moves = piece.next_moves(board)
       piece_moves.include?([rank, 5]) || piece_moves.include?([rank, 6])
-    end || !is_hallway_free
+    end || !is_hallway_free || rook.moved?
   end
 
   # O-O-O
   def long_castle_blocked?(board, color)
     rank = color == Board::PLAYER_ONE ? 0 : 7
-    is_hallway_free = board.piece_at?(rank, 1).nil? && board.piece_at?(rank, 2).nil? && board.piece_at?(rank, 3).nil?
+    enemy = color == Board::PLAYER_ONE ? Board::PLAYER_TWO : Board::PLAYER_ONE
+    rook = board.piece_at(rank, 0)
+    is_hallway_free = board.piece_at(rank, 1).nil? && board.piece_at(rank, 2).nil? && board.piece_at(rank, 3).nil?
     board.each_piece(enemy).any? do |piece|
-      piece_moves = piece.next_moves
+      piece_moves = piece.next_moves(board)
       piece_moves.include?([rank, 5]) || piece_moves.include?([rank, 6])
-    end || !is_hallway_free
+    end || !is_hallway_free || rook.moved?
   end
 end

@@ -1,7 +1,7 @@
 require_relative '../piece'
 class King < Piece
   attr_reader :symbol, :notation
-  attr_accessor :can_castle
+  attr_writer :checked
 
   MOVES_OFFSETS = [1, -1, 0].repeated_permutation(2).to_a[0..-2] # Removes [0,0]
   MOVES_OFFSETS.pop
@@ -9,7 +9,11 @@ class King < Piece
     super
     @symbol = Piece::PIECES[:king].colorize(color)
     @notation = 'K'
-    @can_castle = true
+    @checked = false
+  end
+
+  def checked?
+    @checked
   end
 
   def calculate_next_moves(board)
@@ -23,5 +27,13 @@ class King < Piece
                                                                                   ))
     end
     moves
+  end
+
+  def can_castle_long?(board)
+    !(checked? || moved? || long_castle_blocked?(board, color))
+  end
+
+  def can_castle_short?(board)
+    !(checked? || moved? || short_castle_blocked?(board, color))
   end
 end

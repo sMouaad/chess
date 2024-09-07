@@ -9,7 +9,7 @@ require_relative 'pieces/bishop'
 
 require_relative 'notation'
 
-# Board class handling mostly printing logic
+# Board class handling printing logic, moving, finding... pieces, castling etc..
 class Board
   include Notation
   attr_accessor :data
@@ -39,14 +39,31 @@ class Board
   end
 
   def king(color)
-    each_piece do |piece|
-      return piece if piece.is_a?(King) && piece.color == color
+    each_piece(color) do |piece|
+      return piece if piece.is_a?(King)
     end
+  end
+
+  def long_castle(color)
+    rank = color == PLAYER_ONE ? 0 : 7
+    king_move = [[rank, 4], [rank, 2]]
+    rook_move = [[rank, 0], [rank, 3]]
+    piece_move(*king_move)
+    piece_move(*rook_move)
+  end
+
+  def short_castle(color)
+    rank = color == PLAYER_ONE ? 0 : 7
+    king_move = [[rank, 4], [rank, 6]]
+    rook_move = [[rank, 7], [rank, 5]]
+    piece_move(*king_move)
+    piece_move(*rook_move)
   end
 
   def piece_move(initial_pos, final_pos)
     initial_row, initial_column = initial_pos
     final_row, final_column = final_pos
+    piece_at(*initial_pos).moved = true
     data[final_row][final_column] = data[initial_row][initial_column]
     data[initial_row][initial_column] = nil
     piece_at(*final_pos).coordinates = to_coordinates(*final_pos)
