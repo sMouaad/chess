@@ -29,11 +29,16 @@ class Piece
   end
 
   def next_moves_algebraic(board)
-    moves = next_moves(board).map do |move|
+    moves = filter_checked_moves(board, next_moves(board))
+    moves = moves.map do |move|
       simulated_board = simulate_move(board, to_index(coordinates), move)
-      move_to_algebraic(board, self, move) + (check?(simulated_board) ? '+' : '')
+      move_to_algebraic(board, self, move) + (check?(simulated_board, enemy_color) ? '+' : '')
     end
     [coordinates, moves]
+  end
+
+  def enemy_color
+    color == Board::PLAYER_ONE ? Board::PLAYER_TWO : Board::PLAYER_ONE
   end
 
   def to_s
@@ -56,5 +61,14 @@ class Piece
       moves << next_position if correct_index?(next_position) && enemy_square?(board, next_position)
     end
     moves
+  end
+
+  private
+
+  def filter_checked_moves(board, moves)
+    moves.reject do |move|
+      simulated_board = simulate_move(board, to_index(coordinates), move)
+      check?(simulated_board, color)
+    end
   end
 end

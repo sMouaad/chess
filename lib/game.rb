@@ -16,7 +16,13 @@ class Game
   def start
     loop do
       @board.print_board
-      initial_pos, final_pos = play
+      initial_pos, parsed_notation = play # Now, the current player is the next player
+      if initial_pos.nil?
+        puts 'Checkmate!'
+        return
+      end
+      final_pos = to_index(parsed_notation[:final_position])
+      @board.king(current_player_color).checked = true unless parsed_notation[:check?].nil?
       @board.piece_move(initial_pos, final_pos)
     end
   end
@@ -41,6 +47,8 @@ class Game
 
   def play
     moves = next_moves
+    return nil if moves.empty?
+
     possible_moves = moves.values.flatten
     player = @player[current_player]
     player_move = player.play(possible_moves)
@@ -53,7 +61,7 @@ class Game
     next_player_turn
     found_value = nil
     moves.each_value { |element| found_value = element if element.include? player_move }
-    [moves.key(found_value), parse_notation(player_move)[:final_position]].map { |element| to_index(element) }
+    [to_index(moves.key(found_value)), parse_notation(player_move)]
   end
 
   # current_player can only have 0 or 1 as values, 0 : player_one, 1 : player_two

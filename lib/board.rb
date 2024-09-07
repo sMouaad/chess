@@ -38,6 +38,12 @@ class Board
     puts '  a b c d e f g h'
   end
 
+  def king(color)
+    each_piece do |piece|
+      return piece if piece.is_a?(King) && piece.color == color
+    end
+  end
+
   def piece_move(initial_pos, final_pos)
     initial_row, initial_column = initial_pos
     final_row, final_column = final_pos
@@ -56,6 +62,10 @@ class Board
       raise ArgumentError
     end
     data[row][column]
+  end
+
+  def each_piece(&block)
+    data.flatten.compact.each(&block)
   end
 
   private

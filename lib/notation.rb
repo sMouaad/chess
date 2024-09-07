@@ -2,7 +2,7 @@
 
 # Notation module that contains operations on algebraic notation and indexes
 module Notation
-  NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?[+]?$/.freeze
+  NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?(?<check?>[+])?$/.freeze
   CASTLE_NOTATION = /^O-O(?:-O)?$/.freeze
   COORDINATES = /^[a-h][1-8]$/.freeze
   def to_coordinates(row, column)
@@ -15,6 +15,12 @@ module Notation
     raise ArgumentError unless coordinates.is_a?(String) && correct_coordinates?(coordinates)
 
     [coordinates[1].to_i - 1, coordinates[0].ord - 'a'.ord]
+  end
+
+  def notation_check?(notation)
+    raise ArgumentError unless notation.is_a? String
+
+    notation[-1] == '+'
   end
 
   def correct_index?(index)

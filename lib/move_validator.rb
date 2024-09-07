@@ -15,11 +15,13 @@ module MoveValidator
     !piece_board.nil? && enemy?(piece_board)
   end
 
-  # Checks if there is a check in current board
-  def check?(board)
-    board.data.flatten.compact.any? do |piece|
+  # Checks if there is the given player is in check in current board
+  def check?(board, color)
+    # We flatten the board since it's an array for array
+    board.each_piece.any? do |piece|
       piece.next_moves(board).any? do |move|
-        board.piece_at(*move).is_a? King
+        piece_at_move = board.piece_at(*move)
+        piece_at_move.is_a?(King) && piece_at_move.color == color
       end
     end
   end
