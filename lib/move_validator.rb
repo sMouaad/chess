@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'board'
+
 module MoveValidator
   def deep_copy(data)
     Marshal.load(Marshal.dump(data))
@@ -19,7 +21,7 @@ module MoveValidator
   def check?(board, color)
     # We flatten the board since it's an array for array
     board.each_piece.any? do |piece|
-      piece.next_moves(board).any? do |move|
+      piece.calculate_next_moves(board).any? do |move|
         piece_at_move = board.piece_at(*move)
         piece_at_move.is_a?(King) && piece_at_move.color == color
       end
@@ -30,5 +32,26 @@ module MoveValidator
     copy_board = deep_copy(board)
     copy_board.piece_move(initial_pos, final_pos)
     copy_board
+  end
+
+  # O-O
+  def short_castle_blocked?(board, color)
+    rank = color == Board::PLAYER_ONE ? 0 : 7
+    enemy = color == Board::PLAYER_ONE ? Board::PLAYER_TWO : Board::PLAYER_ONE
+    is_hallway_free = board.piece_at?(rank, 5).nil? && board.piece_at?(rank, 6).nil?
+    board.each_piece(enemy).any? do |piece|
+      piece_moves = piece.next_moves
+      piece_moves.include?([rank, 5]) || piece_moves.include?([rank, 6])
+    end || !is_hallway_free
+  end
+
+  # O-O-O
+  def long_castle_blocked?(board, color)
+    rank = color == Board::PLAYER_ONE ? 0 : 7
+    is_hallway_free = board.piece_at?(rank, 1).nil? && board.piece_at?(rank, 2).nil? && board.piece_at?(rank, 3).nil?
+    board.each_piece(enemy).any? do |piece|
+      piece_moves = piece.next_moves
+      piece_moves.include?([rank, 5]) || piece_moves.include?([rank, 6])
+    end || !is_hallway_free
   end
 end

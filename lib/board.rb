@@ -64,8 +64,13 @@ class Board
     data[row][column]
   end
 
-  def each_piece(&block)
-    data.flatten.compact.each(&block)
+  def each_piece(color = nil, &block)
+    if color.nil?
+      data.flatten.compact.each(&block)
+    else
+      pieces = data.flatten.compact.select { |piece| piece.color == color }
+      pieces.each(&block)
+    end
   end
 
   private

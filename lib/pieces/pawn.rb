@@ -14,7 +14,7 @@ class Pawn < Piece
     @en_passant = false
   end
 
-  def next_moves(board)
+  def calculate_next_moves(board)
     moves = []
     row, column = to_index(coordinates)
     offset = (color == Board::PLAYER_ONE ? MOVE_OFFSETS_ONE : MOVE_OFFSETS_TWO)

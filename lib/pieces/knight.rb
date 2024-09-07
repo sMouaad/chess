@@ -13,7 +13,7 @@ class Knight < Piece
   end
 
   # Calculate possible next moves in current position
-  def next_moves(board)
+  def calculate_next_moves(board)
     moves = []
     row, column = to_index(coordinates)
     MOVES_OFFSETS.each do |offset|

@@ -22,7 +22,7 @@ class Game
         return
       end
       final_pos = to_index(parsed_notation[:final_position])
-      @board.king(current_player_color).checked = true unless parsed_notation[:check?].nil?
+      @board.king(current_player_color).can_castle = false if @board.piece_at(*initial_pos).is_a? King
       @board.piece_move(initial_pos, final_pos)
     end
   end

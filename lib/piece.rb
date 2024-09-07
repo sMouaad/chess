@@ -29,7 +29,7 @@ class Piece
   end
 
   def next_moves_algebraic(board)
-    moves = filter_checked_moves(board, next_moves(board))
+    moves = next_moves(board)
     moves = moves.map do |move|
       simulated_board = simulate_move(board, to_index(coordinates), move)
       move_to_algebraic(board, self, move) + (check?(simulated_board, enemy_color) ? '+' : '')
@@ -46,7 +46,7 @@ class Piece
   end
 
   # Method for Queen, Rook, Bishop to inherit due to them having the same logic, to be overridden in other pieces
-  def next_moves(board)
+  def calculate_next_moves(board)
     moves = []
     row, column = to_index(coordinates)
     self.class::MOVES_OFFSETS.each do |move|
@@ -61,6 +61,10 @@ class Piece
       moves << next_position if correct_index?(next_position) && enemy_square?(board, next_position)
     end
     moves
+  end
+
+  def next_moves(board)
+    filter_checked_moves(board, calculate_next_moves(board))
   end
 
   private
