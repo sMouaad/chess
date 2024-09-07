@@ -9,7 +9,7 @@ class Game
 
   def initialize
     @board = Board.new
-    @player = [Human.new, Computer.new]
+    @player = [Human.new, Human.new]
     @current_player = 0
   end
 
@@ -17,19 +17,41 @@ class Game
     loop do
       @board.print_board
       initial_pos, parsed_notation = play
-      if initial_pos.nil?
-        puts 'Checkmate!'
-        return
-      elsif initial_pos == :short_castle
+      game_over?(initial_pos)
+      if initial_pos == :short_castle
         @board.short_castle(current_player_color)
       elsif initial_pos == :long_castle
         @board.long_castle(current_player_color)
       else
         final_pos = to_index(parsed_notation[:final_position])
-        @board.piece_move(to_index(initial_pos), final_pos)
+        initial_pos = to_index(initial_pos)
+        @board.piece_move(initial_pos, final_pos)
+        @board.piece_at(*final_pos).en_passant = true if en_passant?(initial_pos, final_pos)
+        capture_en_passant(final_pos)
       end
       next_player_turn
     end
+  end
+
+  def capture_en_passant(final_pos)
+    piece = @board.piece_at(*final_pos)
+    return unless piece.is_a? Pawn
+
+    return unless correct_index?(enemy_position = [final_pos.first +
+    offset = (current_player_color == Board::PLAYER_ONE ? -1 : 1), final_pos.last])
+
+    enemy_piece = @board.piece_at(*enemy_position)
+    @board.data[final_pos.first + offset][final_pos.last] = nil if p enemy_piece.is_a? Pawn
+  end
+
+  def en_passant?(initial_pos, final_pos)
+    @board.piece_at(*final_pos).is_a?(Pawn) && (final_pos.first - initial_pos.first).abs == 2
+  end
+
+  def game_over?(initial_pos)
+    return unless initial_pos.nil?
+
+    puts 'Checkmate!'
   end
 
   def current_player_color

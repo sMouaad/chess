@@ -67,6 +67,10 @@ class Board
     data[final_row][final_column] = data[initial_row][initial_column]
     data[initial_row][initial_column] = nil
     piece_at(*final_pos).coordinates = to_coordinates(*final_pos)
+    each_piece do |piece|
+      # pawn can no longer be passed on if a move is played
+      piece.en_passant = false if piece.is_a? Pawn
+    end
   end
 
   def piece_at(position, position_opt = nil)

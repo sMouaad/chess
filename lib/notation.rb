@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'move_validator'
+
 # Notation module that contains operations on algebraic notation and indexes
 module Notation
+  include MoveValidator
   NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?(?<check?>[#+])?$/.freeze
   CASTLE_NOTATION = /^O-O(?:-O)?$/.freeze
   COORDINATES = /^[a-h][1-8]$/.freeze
@@ -62,8 +65,26 @@ module Notation
   private
 
   def print_capture(board, piece, piece_move)
-    return if board.piece_at(*piece_move).nil?
+    return unless piece.is_a?(Pawn) || !board.piece_at(*piece_move).nil?
 
-    "#{piece.file if piece.is_a?(Pawn)}x"
+    if piece.is_a?(Pawn)
+      return unless pawn_capture?(board, piece, piece_move)
+
+      "#{piece.file}x"
+    else
+      'x'
+    end
+  end
+
+  def capture_en_passant?(board, piece, piece_position)
+    offset = (piece.color == Board::PLAYER_ONE ? -1 : 1)
+    copy_board = simulate_move(board, to_index(piece.coordinates), piece_position)
+    piece_at_pos = copy_board.piece_at(piece_position.first + offset, piece_position.last)
+    piece_at_pos.is_a?(Pawn)
+  end
+
+  def pawn_capture?(board, piece, piece_position)
+    !board.piece_at(*piece_position).nil? || capture_en_passant?(board, piece,
+                                                                 piece_position)
   end
 end

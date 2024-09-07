@@ -2,7 +2,7 @@ require_relative '../piece'
 
 class Pawn < Piece
   attr_reader :symbol, :notation
-  attr_accessor :en_passant
+  attr_writer :en_passant
 
   MOVE_OFFSETS_ONE = 1
   MOVE_OFFSETS_TWO = -1
@@ -12,6 +12,10 @@ class Pawn < Piece
     @symbol = Piece::PIECES[:pawn].colorize(color)
     @notation = ''
     @en_passant = false
+  end
+
+  def en_passant?
+    @en_passant
   end
 
   def calculate_next_moves(board)
@@ -29,10 +33,21 @@ class Pawn < Piece
     moves = []
     row, column = to_index(coordinates)
     offset = (color == Board::PLAYER_ONE ? MOVE_OFFSETS_ONE : MOVE_OFFSETS_TWO)
-    [column + offset, column - offset].each do |column_offset|
-      final_position = [row + offset, column_offset]
-      moves << final_position if correct_index?(final_position) && enemy_square?(board, final_position)
+    [offset, -offset].each do |column_offset|
+      final_column_offset = column + column_offset
+      final_position = [row + offset, final_column_offset]
+      moves << final_position if correct_index?(final_position) && (enemy_square?(board,
+                                                                                  final_position) || move_en_passant?(board,
+                                                                                                                      [row,
+                                                                                                                       final_column_offset]))
     end
     moves
+  end
+
+  private
+
+  def move_en_passant?(board, position)
+    enemy_piece = board.piece_at(*position)
+    enemy_piece.is_a?(Pawn) && enemy?(enemy_piece)
   end
 end
