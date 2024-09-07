@@ -11,8 +11,6 @@ class King < Piece
     @can_castle = true
   end
 
-  protected
-
   def next_moves(board)
     moves = []
     row, column = to_index(coordinates)

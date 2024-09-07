@@ -14,8 +14,6 @@ class Pawn < Piece
     @en_passant = false
   end
 
-  protected
-
   def next_moves(board)
     moves = []
     row, column = to_index(coordinates)

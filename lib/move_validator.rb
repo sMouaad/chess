@@ -15,11 +15,18 @@ module MoveValidator
     !piece_board.nil? && enemy?(piece_board)
   end
 
-  def check?(board, initial_pos, final_pos)
-    copy_board = deep_copy(board)
-    copy_board.piece_move(initial_pos, final_pos) # mimicks move
-    copy_board.piece_at(*final_pos).next_moves(board).any? do |move|
-      copy_board.piece_at(*move).is_a? King
+  # Checks if there is a check in current board
+  def check?(board)
+    board.data.flatten.compact.any? do |piece|
+      piece.next_moves(board).any? do |move|
+        board.piece_at(*move).is_a? King
+      end
     end
+  end
+
+  def simulate_move(board, initial_pos, final_pos)
+    copy_board = deep_copy(board)
+    copy_board.piece_move(initial_pos, final_pos)
+    copy_board
   end
 end

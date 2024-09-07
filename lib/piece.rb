@@ -30,7 +30,8 @@ class Piece
 
   def next_moves_algebraic(board)
     moves = next_moves(board).map do |move|
-      move_to_algebraic(board, self, move) + (check?(board, to_index(coordinates), move) ? '+' : '')
+      simulated_board = simulate_move(board, to_index(coordinates), move)
+      move_to_algebraic(board, self, move) + (check?(simulated_board) ? '+' : '')
     end
     [coordinates, moves]
   end
@@ -38,8 +39,6 @@ class Piece
   def to_s
     self.class.to_s
   end
-
-  protected
 
   # Method for Queen, Rook, Bishop to inherit due to them having the same logic, to be overridden in other pieces
   def next_moves(board)

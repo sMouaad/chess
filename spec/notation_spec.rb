@@ -34,6 +34,23 @@ describe Notation do
         expect(parse_notation('Ra4')).to_not eql nil
       end
     end
+    describe 'check piece moves' do
+      it 'validates Nf3+' do
+        expect(parse_notation('Nf3+')).to_not eql nil
+      end
+      it 'validates Bxg5+' do
+        expect(parse_notation('Bxg5+')).to_not eql nil
+      end
+      it 'validates Qh4xd4+' do
+        expect(parse_notation('Qh4xd4+')).to_not eql nil
+      end
+      it 'validates Kxe2+' do
+        expect(parse_notation('Kxe2+')).to_not eql nil
+      end
+      it 'validates Ra4+' do
+        expect(parse_notation('Ra4+')).to_not eql nil
+      end
+    end
 
     describe 'captures' do
       it 'validates exd5' do
