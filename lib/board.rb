@@ -66,7 +66,9 @@ class Board
     piece_at(*initial_pos).moved = true
     data[final_row][final_column] = data[initial_row][initial_column]
     data[initial_row][initial_column] = nil
-    piece_at(*final_pos).coordinates = to_coordinates(*final_pos)
+    piece_final = piece_at(*final_pos)
+    piece_final.en_passant = true if en_passant?(initial_pos, final_pos)
+    piece_final.coordinates = to_coordinates(*final_pos)
     each_piece do |piece|
       # pawn can no longer be passed on if a move is played
       piece.en_passant = false if piece.is_a? Pawn
@@ -108,5 +110,9 @@ class Board
 
     data[row] = pieces.map.with_index { |piece, column| piece.new(player, to_coordinates(row, column)) }
     data[pawn_row] = Array.new(8) { |column| Pawn.new(player, to_coordinates(pawn_row, column)) }
+  end
+
+  def en_passant?(initial_pos, final_pos)
+    piece_at(*final_pos).is_a?(Pawn) && (final_pos.first - initial_pos.first).abs == 2
   end
 end

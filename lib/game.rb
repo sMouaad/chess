@@ -27,7 +27,7 @@ class Game
         final_pos = to_index(parsed_notation[:final_position])
         initial_pos = to_index(initial_pos)
         @board.piece_move(initial_pos, final_pos)
-        @board.piece_at(*final_pos).en_passant = true if en_passant?(initial_pos, final_pos)
+        @board.king(enemy_color(current_player_color)).checked = !parsed_notation[:check?].nil?
         capture_en_passant(final_pos)
       end
       next_player_turn
@@ -41,18 +41,19 @@ class Game
     return unless correct_index?(enemy_position = [final_pos.first +
     offset = (current_player_color == Board::PLAYER_ONE ? -1 : 1), final_pos.last])
 
-    enemy_piece = @board.piece_at(*enemy_position)
-    @board.data[final_pos.first + offset][final_pos.last] = nil if p enemy_piece.is_a? Pawn
+    @board.data[final_pos.first + offset][final_pos.last] = nil if @board.piece_at(*enemy_position).is_a? Pawn
   end
 
-  def en_passant?(initial_pos, final_pos)
-    @board.piece_at(*final_pos).is_a?(Pawn) && (final_pos.first - initial_pos.first).abs == 2
-  end
+  def game_over?(moves)
+    # If there are no moves available then gameover
+    return false unless moves.nil?
 
-  def game_over?(initial_pos)
-    return false unless initial_pos.nil?
-
-    puts "Checkmate! #{enemy_color(current_player_color).to_s.capitalize} wins!"
+    winner = enemy_color(current_player_color)
+    if @board.king(current_player_color).checked?
+      puts "Checkmate! #{winner.to_s.capitalize} wins!"
+    else
+      puts 'Stalemate!'
+    end
     true
   end
 
