@@ -16,7 +16,6 @@ class Human
   private
 
   def print_possible_moves(possible_moves)
-    puts 'Possible moves :'
     possible_moves.each do |piece_move|
       print "#{piece_move} "
     end

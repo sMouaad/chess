@@ -38,13 +38,9 @@ class Piece
     moves = next_moves(board)
     moves = moves.map do |move|
       simulated_board = simulate_move(board, to_index(coordinates), move)
-      move_to_algebraic(board, self, move) + (check?(simulated_board, enemy_color) ? '+' : '')
+      move_to_algebraic(board, self, move) + (check?(simulated_board, enemy_color(color)) ? '+' : '')
     end
     [coordinates, moves]
-  end
-
-  def enemy_color
-    color == Board::PLAYER_ONE ? Board::PLAYER_TWO : Board::PLAYER_ONE
   end
 
   def to_s

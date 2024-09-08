@@ -17,7 +17,8 @@ class Game
     loop do
       @board.print_board
       initial_pos, parsed_notation = play
-      game_over?(initial_pos)
+      return if game_over?(initial_pos)
+
       if initial_pos == :short_castle
         @board.short_castle(current_player_color)
       elsif initial_pos == :long_castle
@@ -49,9 +50,10 @@ class Game
   end
 
   def game_over?(initial_pos)
-    return unless initial_pos.nil?
+    return false unless initial_pos.nil?
 
-    puts 'Checkmate!'
+    puts "Checkmate! #{enemy_color(current_player_color).to_s.capitalize} wins!"
+    true
   end
 
   def current_player_color
@@ -61,17 +63,13 @@ class Game
   # returns hash with key as initial position and value as all possible moves
   def next_moves
     all_moves = {}
-    @board.data.compact.each do |file|
-      file.compact.each do |piece|
-        next unless piece.color == current_player_color # To get moves of the current player
+    @board.each_piece do |piece|
+      next unless piece.color == current_player_color # To get moves of the current player
 
-        initial_coordinate, moves = piece.next_moves_algebraic(@board)
-        all_moves[initial_coordinate] = moves unless moves.empty?
-      end
+      initial_coordinate, moves = piece.next_moves_algebraic(@board)
+      all_moves[initial_coordinate] = moves unless moves.empty?
     end
-    king = @board.king(current_player_color)
-    all_moves[:long_castle] = 'O-O-O' if king.can_castle_long?(@board)
-    all_moves[:short_castle] = 'O-O' if king.can_castle_short?(@board)
+    add_castle_moves(all_moves)
     all_moves
   end
 
@@ -86,16 +84,24 @@ class Game
       break if possible_moves.include? player_move
 
       puts 'Illegal move, try again...'
-      player_move = player.play(moves)
+      player_move = player.play(possible_moves)
     end
     found_value = nil
     moves.each_value { |element| found_value = element if element.include? player_move }
     [moves.key(found_value), parse_notation(player_move)]
   end
 
+  private
+
   # current_player can only have 0 or 1 as values, 0 : player_one, 1 : player_two
   def next_player_turn
     @current_player = (current_player + 1) % 2
+  end
+
+  def add_castle_moves(moves)
+    king = @board.king(current_player_color)
+    moves[:long_castle] = 'O-O-O' if king.can_castle_long?(@board)
+    moves[:short_castle] = 'O-O' if king.can_castle_short?(@board)
   end
 end
 

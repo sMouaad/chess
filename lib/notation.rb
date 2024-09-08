@@ -75,16 +75,4 @@ module Notation
       'x'
     end
   end
-
-  def capture_en_passant?(board, piece, piece_position)
-    offset = (piece.color == Board::PLAYER_ONE ? -1 : 1)
-    copy_board = simulate_move(board, to_index(piece.coordinates), piece_position)
-    piece_at_pos = copy_board.piece_at(piece_position.first + offset, piece_position.last)
-    piece_at_pos.is_a?(Pawn)
-  end
-
-  def pawn_capture?(board, piece, piece_position)
-    !board.piece_at(*piece_position).nil? || capture_en_passant?(board, piece,
-                                                                 piece_position)
-  end
 end

@@ -28,6 +28,10 @@ module MoveValidator
     end
   end
 
+  def enemy_color(color)
+    color == Board::PLAYER_ONE ? Board::PLAYER_TWO : Board::PLAYER_ONE
+  end
+
   def simulate_move(board, initial_pos, final_pos)
     copy_board = deep_copy(board)
     copy_board.piece_move(initial_pos, final_pos)
@@ -56,5 +60,17 @@ module MoveValidator
       piece_moves = piece.next_moves(board)
       piece_moves.include?([rank, 5]) || piece_moves.include?([rank, 6])
     end || !is_hallway_free || rook.moved?
+  end
+
+  def capture_en_passant?(board, piece, piece_position)
+    offset = (piece.color == Board::PLAYER_ONE ? -1 : 1)
+    copy_board = simulate_move(board, to_index(piece.coordinates), piece_position)
+    piece_at_pos = copy_board.piece_at(piece_position.first + offset, piece_position.last)
+    piece_at_pos.is_a?(Pawn)
+  end
+
+  def pawn_capture?(board, piece, piece_position)
+    !board.piece_at(*piece_position).nil? || capture_en_passant?(board, piece,
+                                                                 piece_position)
   end
 end

@@ -94,6 +94,10 @@ class Board
     end
   end
 
+  def enemy_color(color)
+    color == Board::PLAYER_ONE ? Board::PLAYER_TWO : Board::PLAYER_ONE
+  end
+
   private
 
   def initialize_player(player)
