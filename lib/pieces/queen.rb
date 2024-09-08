@@ -7,7 +7,6 @@ class Queen < Piece
   MOVES_OFFSETS = Bishop::MOVES_OFFSETS + Rook::MOVES_OFFSETS
   def initialize(color, coordinates)
     super
-    @symbol = Piece::PIECES[:queen].colorize(color)
     @notation = 'Q'
   end
 end

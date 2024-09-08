@@ -20,12 +20,6 @@ module Notation
     [coordinates[1].to_i - 1, coordinates[0].ord - 'a'.ord]
   end
 
-  def notation_check?(notation)
-    raise ArgumentError unless notation.is_a? String
-
-    notation[-1] == '+'
-  end
-
   def correct_index?(index)
     index.all? { |element| element.between?(0, 7) }
   end

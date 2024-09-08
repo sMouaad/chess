@@ -8,7 +8,6 @@ class Knight < Piece
   MOVES_OFFSETS = [1, -1].product([2, -2]) + [2, -2].product([1, -1])
   def initialize(color, coordinates)
     super
-    @symbol = Piece::PIECES[:knight].colorize(color)
     @notation = 'N'
   end
 

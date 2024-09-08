@@ -9,11 +9,15 @@ class Piece
   attr_accessor :coordinates
   attr_writer :moved
 
-  PIECES = { knight: '♞', queen: '♛', king: '♚', rook: '♜', bishop: '♝', pawn: '♟' }.freeze
+  PIECES = [{ Knight: '♘', Queen: '♕', King: '♔', Rook: '♖', Bishop: '♗', Pawn: '♙' },
+            { Knight: '♞', Queen: '♛', King: '♚', Rook: '♜', Bishop: '♝', Pawn: '♟' }].freeze
   def initialize(color, coordinates)
+    is_player_one = (color == Board::PLAYER_ONE)
     @color = color
     @moved = false
     @coordinates = coordinates # coordinates (e.g: h1 d3 f4)
+    @symbol = Piece::PIECES[is_player_one ? 0 : 1][self.class.to_s.to_sym].colorize(color: color,
+                                                                                    mode: is_player_one ? :bold : :none)
   end
 
   def moved?

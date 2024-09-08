@@ -7,7 +7,6 @@ class King < Piece
   MOVES_OFFSETS.pop
   def initialize(color, coordinates)
     super
-    @symbol = Piece::PIECES[:king].colorize(color)
     @notation = 'K'
     @checked = false
   end

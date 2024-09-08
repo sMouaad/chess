@@ -14,19 +14,17 @@ class Board
   include Notation
   attr_accessor :data
 
+  # They should not be equal to each other
   PLAYER_ONE = :white
   PLAYER_TWO = :black
-  DARK_CELL = :black
-  LIGHT_CELL = :white
+
+  DARK_CELL = :light_blue
+  LIGHT_CELL = :light_cyan
   EMPTY_CELL = ' '.freeze
   def initialize
     @data = Array.new(8) { Array.new(8) }
     initialize_player(PLAYER_ONE)
     initialize_player(PLAYER_TWO)
-    # 4,1 2,2 3,5
-    @data[5][1] = Queen.new(PLAYER_ONE, to_coordinates(5, 1))
-    @data[3][1] = Queen.new(PLAYER_ONE, to_coordinates(3, 1))
-    @data[3][3] = Queen.new(PLAYER_ONE, to_coordinates(3, 3))
   end
 
   def print_board

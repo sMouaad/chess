@@ -9,7 +9,6 @@ class Pawn < Piece
   RANK = [nil, '2', '7'].freeze
   def initialize(color, coordinates)
     super
-    @symbol = Piece::PIECES[:pawn].colorize(color)
     @notation = ''
     @en_passant = false
   end
