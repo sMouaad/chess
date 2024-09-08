@@ -23,6 +23,10 @@ class Board
     @data = Array.new(8) { Array.new(8) }
     initialize_player(PLAYER_ONE)
     initialize_player(PLAYER_TWO)
+    # 4,1 2,2 3,5
+    @data[5][1] = Queen.new(PLAYER_ONE, to_coordinates(5, 1))
+    @data[3][1] = Queen.new(PLAYER_ONE, to_coordinates(3, 1))
+    @data[3][3] = Queen.new(PLAYER_ONE, to_coordinates(3, 3))
   end
 
   def print_board

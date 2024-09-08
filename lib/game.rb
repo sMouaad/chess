@@ -107,25 +107,51 @@ class Game
   end
 
   # Structure of the hash is {initial_position_of_the_piece => all_the_moves possible for that piece in an array}
-  def remove_ambiguity(all_moves)
-    all_moves.each do |piece_one_pos, piece_one_moves|
-      piece_one_moves.each do |move_one|
-        all_moves.each do |piece_two_pos, piece_two_moves|
-          piece_two_moves.each do |move_two|
-            next unless piece_one_pos != piece_two_pos && move_one == move_two
+  def remove_ambiguity(hash)
+    all_moves(hash).each do |move|
+      conflicted_pieces = conflicts(hash, move)
+      disambiguate_pieces(hash, conflicted_pieces, move) unless conflicted_pieces.length == 1
+    end
+  end
 
-            new_move_one = "#{move_one[0]}#{coordinates_file(piece_one_pos)}"
-            new_move_two = "#{move_two[0]}#{coordinates_file(piece_two_pos)}"
-            if coordinates_file(piece_one_pos) == coordinates_file(piece_two_pos)
-              new_move_one += coordinates_rank(piece_one_pos)
-              new_move_two += coordinates_rank(piece_two_pos)
-            end
-            all_moves[piece_one_pos].push(new_move_one + move_one[1..]).delete(move_one)
-            all_moves[piece_two_pos].push(new_move_two + move_two[1..]).delete(move_two)
-          end
-        end
+  # for a given move give all the pieces that are in conflict
+  def conflicts(hash, piece_move)
+    conflicted_pieces = []
+    hash.each do |piece_position, piece_moves|
+      piece_moves.each do |move|
+        conflicted_pieces << piece_position if piece_move == move
       end
     end
+    conflicted_pieces
+  end
+
+  def disambiguate_pieces(hash, pieces, move)
+    pieces.each do |piece|
+      str = move[0] + if ambiguity_file?(piece, pieces) && ambiguity_rank?(piece, pieces)
+                        piece
+                      elsif !ambiguity_file?(piece, pieces)
+                        coordinates_file(piece)
+                      else
+                        coordinates_rank(piece)
+                      end
+      hash[piece].push("#{str}#{move[1..]}").delete(move)
+    end
+  end
+
+  def ambiguity_file?(piece, other_pieces)
+    other_pieces.any? do |second_piece|
+      piece != second_piece && (coordinates_file(piece) == coordinates_file(second_piece))
+    end
+  end
+
+  def ambiguity_rank?(piece, other_pieces)
+    other_pieces.any? do |second_piece|
+      piece != second_piece && (coordinates_rank(piece) == coordinates_rank(second_piece))
+    end
+  end
+
+  def all_moves(hash)
+    hash.values.flatten.uniq
   end
 end
 
