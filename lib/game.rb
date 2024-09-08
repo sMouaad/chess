@@ -70,6 +70,7 @@ class Game
       initial_coordinate, moves = piece.next_moves_algebraic(@board)
       all_moves[initial_coordinate] = moves unless moves.empty?
     end
+    remove_ambiguity(all_moves)
     add_castle_moves(all_moves)
     all_moves
   end
@@ -103,6 +104,28 @@ class Game
     king = @board.king(current_player_color)
     moves[:long_castle] = 'O-O-O' if king.can_castle_long?(@board)
     moves[:short_castle] = 'O-O' if king.can_castle_short?(@board)
+  end
+
+  # Structure of the hash is {initial_position_of_the_piece => all_the_moves possible for that piece in an array}
+  def remove_ambiguity(all_moves)
+    all_moves.each do |piece_one_pos, piece_one_moves|
+      piece_one_moves.each do |move_one|
+        all_moves.each do |piece_two_pos, piece_two_moves|
+          piece_two_moves.each do |move_two|
+            next unless piece_one_pos != piece_two_pos && move_one == move_two
+
+            new_move_one = "#{move_one[0]}#{coordinates_file(piece_one_pos)}"
+            new_move_two = "#{move_two[0]}#{coordinates_file(piece_two_pos)}"
+            if coordinates_file(piece_one_pos) == coordinates_file(piece_two_pos)
+              new_move_one += coordinates_rank(piece_one_pos)
+              new_move_two += coordinates_rank(piece_two_pos)
+            end
+            all_moves[piece_one_pos].push(new_move_one + move_one[1..]).delete(move_one)
+            all_moves[piece_two_pos].push(new_move_two + move_two[1..]).delete(move_two)
+          end
+        end
+      end
+    end
   end
 end
 
