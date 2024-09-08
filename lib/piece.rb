@@ -38,7 +38,15 @@ class Piece
     moves = next_moves(board)
     moves = moves.map do |move|
       simulated_board = simulate_move(board, to_index(coordinates), move)
-      move_to_algebraic(board, self, move) + (check?(simulated_board, enemy_color(color)) ? '+' : '')
+      move_to_algebraic(board, self,
+                        move) + (if checkmate?(simulated_board,
+                                               enemy_color(color))
+                                   '#'
+                                 elsif check?(simulated_board, enemy_color(color))
+                                   '+'
+                                 else
+                                   ''
+                                 end)
     end
     [coordinates, moves]
   end

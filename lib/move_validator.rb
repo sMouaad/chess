@@ -19,11 +19,20 @@ module MoveValidator
 
   # Checks if there is the given player is in check in current board
   def check?(board, color)
-    # We flatten the board since it's an array for array
     board.each_piece.any? do |piece|
       piece.calculate_next_moves(board).any? do |move|
         piece_at_move = board.piece_at(*move)
         piece_at_move.is_a?(King) && piece_at_move.color == color
+      end
+    end
+  end
+
+  # Checks if there is the given player is checkmated in current board
+  def checkmate?(board, color)
+    board.each_piece.any? do |piece|
+      piece.calculate_next_moves(board).any? do |move|
+        piece_at_move = board.piece_at(*move)
+        piece_at_move.is_a?(King) && piece_at_move.color == color && piece_at_move.next_moves(board).empty?
       end
     end
   end
