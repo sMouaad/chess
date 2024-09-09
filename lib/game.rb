@@ -1,5 +1,6 @@
 require_relative 'board'
 require_relative 'notation'
+require_relative 'move_validator'
 require_relative 'players/human'
 require_relative 'players/computer'
 class Game
@@ -106,38 +107,6 @@ class Game
     king = @board.king(current_player_color)
     moves[:long_castle] = 'O-O-O' if king.can_castle_long?(@board)
     moves[:short_castle] = 'O-O' if king.can_castle_short?(@board)
-  end
-
-  # Structure of the hash is {initial_position_of_the_piece => all_the_moves possible for that piece in an array}
-  def remove_ambiguity(hash)
-    all_moves(hash).each do |move|
-      conflicted_pieces = conflicts(hash, move)
-      disambiguate_pieces(hash, conflicted_pieces, move) unless conflicted_pieces.length == 1
-    end
-  end
-
-  # for a given move give all the pieces that are in conflict
-  def conflicts(hash, piece_move)
-    conflicted_pieces = []
-    hash.each do |piece_position, piece_moves|
-      piece_moves.each do |move|
-        conflicted_pieces << piece_position if piece_move == move
-      end
-    end
-    conflicted_pieces
-  end
-
-  def disambiguate_pieces(hash, pieces, move)
-    pieces.each do |piece|
-      str = move[0] + if ambiguity_file?(piece, pieces) && ambiguity_rank?(piece, pieces)
-                        piece
-                      elsif !ambiguity_file?(piece, pieces)
-                        coordinates_file(piece)
-                      else
-                        coordinates_rank(piece)
-                      end
-      hash[piece].push("#{str}#{move[1..]}").delete(move)
-    end
   end
 
   def all_moves(hash)

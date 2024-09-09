@@ -2,6 +2,7 @@
 
 require_relative 'board'
 
+# Module containing methods related to piece moves validation, checking, and disambiguating
 module MoveValidator
   def deep_copy(data)
     Marshal.load(Marshal.dump(data))
@@ -81,5 +82,38 @@ module MoveValidator
   def pawn_capture?(board, piece, piece_position)
     !board.piece_at(*piece_position).nil? || capture_en_passant?(board, piece,
                                                                  piece_position)
+  end
+
+  # Iterate through all moves and get all pieces in common for a given move, then disambiguate
+  def remove_ambiguity(hash)
+    all_moves(hash).each do |move|
+      conflicted_pieces = conflicts(hash, move)
+      disambiguate_pieces(hash, conflicted_pieces, move) unless conflicted_pieces.length == 1
+    end
+  end
+
+  # For a given move give all the pieces that are in conflict
+  def conflicts(hash, piece_move)
+    conflicted_pieces = []
+    hash.each do |piece_position, piece_moves|
+      piece_moves.each do |move|
+        conflicted_pieces << piece_position if piece_move == move
+      end
+    end
+    conflicted_pieces
+  end
+
+  # Disambiguate pieces
+  def disambiguate_pieces(hash, pieces, move)
+    pieces.each do |piece|
+      str = move[0] + if ambiguity_file?(piece, pieces) && ambiguity_rank?(piece, pieces)
+                        piece
+                      elsif !ambiguity_file?(piece, pieces)
+                        coordinates_file(piece)
+                      else
+                        coordinates_rank(piece)
+                      end
+      hash[piece].push("#{str}#{move[1..]}").delete(move)
+    end
   end
 end
