@@ -34,6 +34,8 @@ class Game
     end
   end
 
+  # Captures the enemy pawn en passant (if there is an en passant move)
+
   def capture_en_passant(final_pos)
     piece = @board.piece_at(*final_pos)
     return unless piece.is_a? Pawn
@@ -41,7 +43,7 @@ class Game
     return unless correct_index?(enemy_position = [final_pos.first +
     offset = (current_player_color == Board::PLAYER_ONE ? -1 : 1), final_pos.last])
 
-    @board.data[final_pos.first + offset][final_pos.last] = nil if @board.piece_at(*enemy_position).is_a? Pawn
+    @board.square_remove(final_pos.first + offset, final_pos.last) if @board.piece_at(*enemy_position).is_a? Pawn
   end
 
   def game_over?(moves)
@@ -135,18 +137,6 @@ class Game
                         coordinates_rank(piece)
                       end
       hash[piece].push("#{str}#{move[1..]}").delete(move)
-    end
-  end
-
-  def ambiguity_file?(piece, other_pieces)
-    other_pieces.any? do |second_piece|
-      piece != second_piece && (coordinates_file(piece) == coordinates_file(second_piece))
-    end
-  end
-
-  def ambiguity_rank?(piece, other_pieces)
-    other_pieces.any? do |second_piece|
-      piece != second_piece && (coordinates_rank(piece) == coordinates_rank(second_piece))
     end
   end
 

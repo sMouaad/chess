@@ -40,6 +40,8 @@ class Board
     puts '  a b c d e f g h'
   end
 
+  # Returns king of a given player
+
   def king(color)
     each_piece(color) do |piece|
       return piece if piece.is_a?(King)
@@ -67,7 +69,7 @@ class Board
     final_row, final_column = final_pos
     piece_at(*initial_pos).moved = true
     data[final_row][final_column] = data[initial_row][initial_column]
-    data[initial_row][initial_column] = nil
+    square_remove(initial_row, initial_column)
     piece_final = piece_at(*final_pos)
     piece_final.en_passant = true if en_passant?(initial_pos, final_pos)
     piece_final.coordinates = to_coordinates(*final_pos)
@@ -76,6 +78,8 @@ class Board
       piece.en_passant = false if piece.is_a? Pawn
     end
   end
+
+  # Returns a piece at the given position
 
   def piece_at(position, position_opt = nil)
     if position_opt.nil?
@@ -88,6 +92,22 @@ class Board
     end
     data[row][column]
   end
+
+  # Remove a piece in the given position if there is any
+
+  def square_remove(position, position_opt = nil)
+    if position_opt.nil?
+      row, column = to_index(position)
+    elsif [position, position_opt].all?(Integer) && [position, position_opt].all? { |pos| pos.between?(0, 7) }
+      row = position
+      column = position_opt
+    else
+      raise ArgumentError
+    end
+    data[row][column] = nil
+  end
+
+  # Iterate through each piece of a given player, if no player given, it will iterate through all players
 
   def each_piece(color = nil, &block)
     if color.nil?
@@ -113,6 +133,8 @@ class Board
     data[row] = pieces.map.with_index { |piece, column| piece.new(player, to_coordinates(row, column)) }
     data[pawn_row] = Array.new(8) { |column| Pawn.new(player, to_coordinates(pawn_row, column)) }
   end
+
+  # Checks if the enemy piece at a given position allows an en passant in case it's a pawn
 
   def en_passant?(initial_pos, final_pos)
     piece_at(*final_pos).is_a?(Pawn) && (final_pos.first - initial_pos.first).abs == 2

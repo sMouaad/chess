@@ -56,6 +56,22 @@ module Notation
     coordinates.match?(COORDINATES)
   end
 
+  # Takes as argument the coordinate of a piece and an array of coordinates of other pieces
+
+  def ambiguity_file?(piece, other_pieces)
+    other_pieces.any? do |second_piece|
+      piece != second_piece && (coordinates_file(piece) == coordinates_file(second_piece))
+    end
+  end
+
+  def ambiguity_rank?(piece, other_pieces)
+    other_pieces.any? do |second_piece|
+      piece != second_piece && (coordinates_rank(piece) == coordinates_rank(second_piece))
+    end
+  end
+
+  ###
+
   private
 
   def print_capture(board, piece, piece_move)

@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require_relative '../player'
 require_relative '../notation'
 
+# Human class
 class Human
   include Notation
   def play(possible_moves)
