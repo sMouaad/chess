@@ -17,6 +17,10 @@ class Pawn < Piece
     @en_passant
   end
 
+  def promotion?(move)
+    move.first == (color == Board::PLAYER_ONE ? 7 : 0)
+  end
+
   def calculate_next_moves(board)
     moves = []
     row, column = to_index(coordinates)

@@ -49,9 +49,22 @@ module Notation
   end
 
   def move_to_algebraic(board, piece, move)
-    simulated_board = simulate_move(board, to_index(piece.coordinates), move)
-    "#{piece.notation}#{print_capture(board, piece,
-                                      move)}#{to_coordinates(*move)}#{print_check_or_mate(simulated_board, piece)}"
+    if piece.is_a?(Pawn) && piece.promotion?(move)
+      [Knight, Queen, Bishop, Rook].map do |promoted_piece|
+        promoted_piece = promoted_piece.new(piece.color, to_coordinates(*move))
+        simulated_board = deep_copy(board)
+        simulated_board.square_remove(piece.coordinates)
+        simulated_board.data[move.first][move.last] = promoted_piece
+        "#{piece.notation}#{print_capture(board, piece,
+                                          move)}#{to_coordinates(*move)}=#{promoted_piece.notation}#{print_check_or_mate(
+                                            simulated_board, piece
+                                          )}"
+      end
+    else
+      simulated_board = simulate_move(board, to_index(piece.coordinates), move)
+      "#{piece.notation}#{print_capture(board, piece,
+                                        move)}#{to_coordinates(*move)}#{print_check_or_mate(simulated_board, piece)}"
+    end
   end
 
   def correct_coordinates?(coordinates)

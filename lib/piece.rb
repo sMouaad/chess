@@ -43,7 +43,7 @@ class Piece
     moves = moves.map do |move|
       move_to_algebraic(board, self, move)
     end
-    [coordinates, moves]
+    [coordinates, moves.flatten]
   end
 
   def to_s
