@@ -34,7 +34,13 @@ class Game
       @board.long_castle(current_player_color)
     else
       final_pos = move[:final_position]
-      @board.piece_move(to_index(initial_pos), to_index(final_pos))
+      promotion = move[:promotion]
+      if promotion.nil?
+        @board.piece_move(to_index(initial_pos), to_index(final_pos))
+      else
+        # to trim = out of the promotion we do [1]
+        @board.promote_pawn(initial_pos, promotion[1], to_index(final_pos))
+      end
       @board.king(enemy_color(current_player_color)).checked = !move[:check?].nil?
       capture_en_passant(to_index(final_pos)) # Captures the enemy pawn from board if there is en passant
     end

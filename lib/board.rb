@@ -21,6 +21,7 @@ class Board
   DARK_CELL = :light_blue
   LIGHT_CELL = :light_cyan
   EMPTY_CELL = ' '.freeze
+
   def initialize
     @data = Array.new(8) { Array.new(8) }
     initialize_player(PLAYER_ONE)
@@ -105,6 +106,13 @@ class Board
       raise ArgumentError
     end
     data[row][column] = nil
+  end
+
+  def promote_pawn(piece, promoted_piece_notation, move)
+    promoted_piece = Pawn::PROMOTIONS[promoted_piece_notation]
+    piece = piece_at(piece)
+    square_remove(piece.coordinates)
+    data[move.first][move.last] = promoted_piece.new(piece.color, to_coordinates(*move))
   end
 
   # Iterate through each piece of a given player, if no player given, it will iterate through all players

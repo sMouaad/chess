@@ -1,9 +1,15 @@
 require_relative '../piece'
+require_relative 'knight'
+require_relative 'rook'
+require_relative 'queen'
+require_relative 'bishop'
 
+# Pawn class
 class Pawn < Piece
   attr_reader :symbol, :notation
   attr_writer :en_passant
 
+  PROMOTIONS = { 'N' => Knight, 'R' => Rook, 'Q' => Queen, 'B' => Bishop }.freeze
   MOVE_OFFSETS_ONE = 1
   MOVE_OFFSETS_TWO = -1
   RANK = [nil, '2', '7'].freeze
