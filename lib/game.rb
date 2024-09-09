@@ -124,6 +124,3 @@ class Game
     hash.values.flatten.uniq
   end
 end
-
-test = Game.new
-test.start
