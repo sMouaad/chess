@@ -57,7 +57,7 @@ module MoveValidator
     board.each_piece(enemy).any? do |piece|
       piece_moves = piece.next_moves(board)
       piece_moves.include?([rank, 5]) || piece_moves.include?([rank, 6])
-    end || !is_hallway_free || rook.moved?
+    end || !is_hallway_free || rook.nil? || rook.moved?
   end
 
   # O-O-O
@@ -69,7 +69,7 @@ module MoveValidator
     board.each_piece(enemy).any? do |piece|
       piece_moves = piece.next_moves(board)
       piece_moves.include?([rank, 5]) || piece_moves.include?([rank, 6])
-    end || !is_hallway_free || rook.moved?
+    end || !is_hallway_free || rook.nil? || rook.moved?
   end
 
   def capture_en_passant?(board, piece, piece_position)
