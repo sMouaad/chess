@@ -49,7 +49,9 @@ module Notation
   end
 
   def move_to_algebraic(board, piece, move)
-    "#{piece.notation}#{print_capture(board, piece, move)}#{to_coordinates(*move)}"
+    simulated_board = simulate_move(board, to_index(piece.coordinates), move)
+    "#{piece.notation}#{print_capture(board, piece,
+                                      move)}#{to_coordinates(*move)}#{print_check_or_mate(simulated_board, piece)}"
   end
 
   def correct_coordinates?(coordinates)
@@ -73,6 +75,16 @@ module Notation
   ###
 
   private
+
+  def print_check_or_mate(board, piece)
+    if checkmate?(board, enemy_color(piece.color))
+      '#'
+    elsif check?(board, enemy_color(piece.color))
+      '+'
+    else
+      ''
+    end
+  end
 
   def print_capture(board, piece, piece_move)
     return unless piece.is_a?(Pawn) || !board.piece_at(*piece_move).nil?
