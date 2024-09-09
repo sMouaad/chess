@@ -3,6 +3,8 @@ require_relative 'notation'
 require_relative 'move_validator'
 require_relative 'players/human'
 require_relative 'players/computer'
+
+# Game class controlling the flow of the game
 class Game
   include Notation
 
@@ -17,21 +19,24 @@ class Game
   def start
     loop do
       @board.print_board
-      initial_pos, parsed_notation = play
+      initial_pos, move_notation = play
       return if game_over?(initial_pos)
 
-      if initial_pos == :short_castle
-        @board.short_castle(current_player_color)
-      elsif initial_pos == :long_castle
-        @board.long_castle(current_player_color)
-      else
-        final_pos = to_index(parsed_notation[:final_position])
-        initial_pos = to_index(initial_pos)
-        @board.piece_move(initial_pos, final_pos)
-        @board.king(enemy_color(current_player_color)).checked = !parsed_notation[:check?].nil?
-        capture_en_passant(final_pos)
-      end
+      make_move(initial_pos, move_notation)
       next_player_turn
+    end
+  end
+
+  def make_move(initial_pos, move)
+    if initial_pos == :short_castle
+      @board.short_castle(current_player_color)
+    elsif initial_pos == :long_castle
+      @board.long_castle(current_player_color)
+    else
+      final_pos = move[:final_position]
+      @board.piece_move(to_index(initial_pos), to_index(final_pos))
+      @board.king(enemy_color(current_player_color)).checked = !move[:check?].nil?
+      capture_en_passant(to_index(final_pos)) # Captures the enemy pawn from board if there is en passant
     end
   end
 
