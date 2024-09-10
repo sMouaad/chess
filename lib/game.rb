@@ -4,6 +4,7 @@ require_relative 'move_validator'
 require_relative 'players/human'
 require_relative 'players/computer'
 require_relative 'commands'
+require_relative 'clear_screen'
 
 # Game class controlling the flow of the game
 class Game
@@ -28,7 +29,6 @@ class Game
     loop do
       @board.print_board(@reversed_board)
       user_choice, move_notation = play
-      puts "\n\n\n\n\n"
       if command?(user_choice)
         execute_command(user_choice)
         next
@@ -37,6 +37,7 @@ class Game
 
       make_move(user_choice, move_notation)
       next_player_turn
+      ClearScreen.clear_screen
     end
   end
 

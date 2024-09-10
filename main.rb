@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'lib/game'
+require_relative 'lib/clear_screen'
+
 def user_input
   gets.chomp.to_i
 end
@@ -25,7 +27,9 @@ def choose_player_or_ai
 end
 
 against_ai = choose_player_or_ai == 2
+ClearScreen.clear_screen
 
 player_one = choose_player == 1 if against_ai
+ClearScreen.clear_screen
 game = Game.new(against_ai, player_one)
 game.start

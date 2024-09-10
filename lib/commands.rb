@@ -9,7 +9,7 @@ module Commands
   end
 
   def print_commands
-    puts "\n\n\n\nTry these commands : #{commands.join(' ')}\n\n\n\n"
+    puts "Try these commands : #{commands.join(' ')}\n"
   end
 
   def command?(cmd)
