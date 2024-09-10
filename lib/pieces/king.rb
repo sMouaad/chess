@@ -4,7 +4,6 @@ class King < Piece
   attr_writer :checked
 
   MOVES_OFFSETS = [1, -1, 0].repeated_permutation(2).to_a[0..-2] # Removes [0,0]
-  MOVES_OFFSETS.pop
   def initialize(color, coordinates)
     super
     @notation = 'K'
