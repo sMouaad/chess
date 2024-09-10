@@ -88,7 +88,11 @@ class Game
   end
 
   def game_over?(moves)
-    # If there are no moves available then gameover
+    # If there are no moves or only king remaining then gameover
+    if @board.each_piece.all? { |piece| piece.is_a?(King) }
+      puts 'Stalemate!'
+      return true
+    end
     return false unless moves.nil?
 
     winner = enemy_color(current_player_color)

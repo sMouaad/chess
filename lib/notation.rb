@@ -5,7 +5,7 @@ require_relative 'move_validator'
 # Notation module that contains operations on algebraic notation and indexes
 module Notation
   include MoveValidator
-  NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?(?<check?>[#+])?$/.freeze
+  NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?(?<check?>[#+])?$/u.freeze
   CASTLE_NOTATION = /^O-O(?:-O)?$/.freeze
   COORDINATES = /^[a-h][1-8]$/.freeze
   def to_coordinates(row, column)
