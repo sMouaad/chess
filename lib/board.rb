@@ -66,6 +66,10 @@ class Board
   end
 
   def piece_move(initial_pos, final_pos)
+    each_piece do |piece|
+      # pawn can no longer be passed on if a move is played
+      piece.en_passant = false if piece.is_a? Pawn
+    end
     initial_row, initial_column = initial_pos
     final_row, final_column = final_pos
     piece_at(*initial_pos).moved = true
@@ -74,10 +78,6 @@ class Board
     piece_final = piece_at(*final_pos)
     piece_final.en_passant = true if en_passant?(initial_pos, final_pos)
     piece_final.coordinates = to_coordinates(*final_pos)
-    each_piece do |piece|
-      # pawn can no longer be passed on if a move is played
-      piece.en_passant = false if piece.is_a? Pawn
-    end
   end
 
   # Returns a piece at the given position

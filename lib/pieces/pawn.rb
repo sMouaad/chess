@@ -55,6 +55,6 @@ class Pawn < Piece
 
   def move_en_passant?(board, position)
     enemy_piece = board.piece_at(*position)
-    enemy_piece.is_a?(Pawn) && enemy?(enemy_piece)
+    enemy_piece.is_a?(Pawn) && enemy?(enemy_piece) && enemy_piece.en_passant?
   end
 end
