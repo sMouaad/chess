@@ -9,6 +9,7 @@ require_relative 'pieces/bishop'
 
 require_relative 'notation'
 
+FILES = 'a b c d e f g h'.freeze
 # Board class handling printing logic, moving, finding... pieces, castling etc..
 class Board
   include Notation
@@ -31,7 +32,7 @@ class Board
   def print_board(flip = false)
     board = flip ? data : data.reverse
     board.each_with_index do |rank, index|
-      print "#{8 - index} "
+      flip ? print("#{index + 1} ") : print("#{8 - index} ")
       rank = rank.reverse if flip
       rank.each_with_index do |cell, subindex|
         new_cell = "#{cell&.symbol || EMPTY_CELL} "
@@ -40,7 +41,7 @@ class Board
       end
       puts
     end
-    puts '  a b c d e f g h'
+    flip ? puts("  #{FILES.reverse}") : puts("  #{FILES}")
   end
 
   # Returns king of a given player

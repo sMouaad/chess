@@ -20,7 +20,7 @@ class Game
               end
     @player = players
     @current_player = 0
-    @reversed_board = false
+    @reversed_board = (player_one.nil? || player_one ? false : true)
   end
 
   def start
@@ -28,6 +28,7 @@ class Game
     loop do
       @board.print_board(@reversed_board)
       user_choice, move_notation = play
+      puts "\n\n\n\n\n"
       if command?(user_choice)
         execute_command(user_choice)
         next
