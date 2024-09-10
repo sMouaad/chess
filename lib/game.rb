@@ -10,9 +10,14 @@ class Game
 
   attr_reader :current_player
 
-  def initialize
+  def initialize(against_ai, player_one)
     @board = Board.new
-    @player = [Human.new, Human.new]
+    players = if against_ai
+                player_one ? [Human.new, Computer.new] : [Computer.new, Human.new]
+              else
+                [Human.new, Human.new]
+              end
+    @player = players
     @current_player = 0
   end
 
