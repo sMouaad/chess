@@ -3,11 +3,12 @@ require_relative 'notation'
 require_relative 'move_validator'
 require_relative 'players/human'
 require_relative 'players/computer'
+require_relative 'commands'
 
 # Game class controlling the flow of the game
 class Game
   include Notation
-
+  include Commands
   attr_reader :current_player
 
   def initialize(against_ai, player_one)
@@ -19,16 +20,34 @@ class Game
               end
     @player = players
     @current_player = 0
+    @reversed_board = false
   end
 
   def start
+    print_commands
     loop do
-      @board.print_board
-      initial_pos, move_notation = play
-      return if game_over?(initial_pos)
+      @board.print_board(@reversed_board)
+      user_choice, move_notation = play
+      if command?(user_choice)
+        execute_command(user_choice)
+        next
+      end
+      exit if game_over?(user_choice)
 
-      make_move(initial_pos, move_notation)
+      make_move(user_choice, move_notation)
       next_player_turn
+    end
+  end
+
+  def execute_command(command)
+    case command
+
+    when :flip
+      @reversed_board = !@reversed_board
+    when :quit
+      exit
+    when :help
+      print_commands
     end
   end
 
@@ -98,18 +117,14 @@ class Game
     moves = next_moves
     return nil if moves.empty?
 
-    possible_moves = moves.values.flatten
-    player = @player[current_player]
-    player_move = player.play(possible_moves)
-    loop do
-      break if possible_moves.include? player_move
-
-      puts 'Illegal move, try again...'
-      player_move = player.play(possible_moves)
+    player_move = @player[current_player].play(moves.values.flatten)
+    if command?(player_move.to_sym)
+      player_move.to_sym
+    else
+      found_value = nil
+      moves.each_value { |element| found_value = element if element.include? player_move }
+      [moves.key(found_value), parse_notation(player_move)]
     end
-    found_value = nil
-    moves.each_value { |element| found_value = element if element.include? player_move }
-    [moves.key(found_value), parse_notation(player_move)]
   end
 
   private

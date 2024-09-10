@@ -28,9 +28,11 @@ class Board
     initialize_player(PLAYER_TWO)
   end
 
-  def print_board
-    data.reverse.each_with_index do |rank, index|
+  def print_board(flip = false)
+    board = flip ? data : data.reverse
+    board.each_with_index do |rank, index|
       print "#{8 - index} "
+      rank = rank.reverse if flip
       rank.each_with_index do |cell, subindex|
         new_cell = "#{cell&.symbol || EMPTY_CELL} "
 
