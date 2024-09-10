@@ -12,7 +12,6 @@ class Pawn < Piece
   PROMOTIONS = { 'N' => Knight, 'R' => Rook, 'Q' => Queen, 'B' => Bishop }.freeze
   MOVE_OFFSETS_ONE = 1
   MOVE_OFFSETS_TWO = -1
-  RANK = [nil, '2', '7'].freeze
   def initialize(color, coordinates)
     super
     @notation = ''
@@ -33,8 +32,7 @@ class Pawn < Piece
     offset = (color == Board::PLAYER_ONE ? MOVE_OFFSETS_ONE : MOVE_OFFSETS_TWO)
     final_position = [row + offset, column]
     moves << final_position if correct_index?(final_position) && empty_square?(board, final_position)
-    final_position = [row + (offset * 2), column]
-    moves << final_position if rank == RANK[offset] && empty_square?(board, final_position)
+    moves << [row + (offset * 2), column] if !moved? && empty_square?(board, final_position)
     moves + capture_moves(board)
   end
 
