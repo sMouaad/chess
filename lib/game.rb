@@ -80,7 +80,11 @@ class Game
     return unless correct_index?(enemy_position = [final_pos.first +
     offset = (current_player_color == Board::PLAYER_ONE ? -1 : 1), final_pos.last])
 
-    @board.square_remove(final_pos.first + offset, final_pos.last) if @board.piece_at(*enemy_position).is_a? Pawn
+    enemy = @board.piece_at(*enemy_position)
+    return unless enemy.is_a?(Pawn) && enemy.color == enemy_color(current_player_color)
+
+    @board.square_remove(final_pos.first + offset,
+                         final_pos.last)
   end
 
   def game_over?(moves)
