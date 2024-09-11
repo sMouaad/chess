@@ -14,12 +14,13 @@ class Game
 
   def initialize(against_ai, player_one)
     @board = Board.new
-    players = if against_ai
+    @player = if against_ai == 2
                 player_one ? [Human.new, Computer.new] : [Computer.new, Human.new]
-              else
+              elsif against_ai == 1
                 [Human.new, Human.new]
+              else
+                [Computer.new, Computer.new]
               end
-    @player = players
     @current_player = 0
     @reversed_board = (player_one.nil? || player_one ? false : true)
   end
@@ -37,6 +38,7 @@ class Game
 
       make_move(user_choice, move_notation)
       next_player_turn
+      sleep(0.4) if @player.all? { |players| players.instance_of? Computer }
       ClearScreen.clear_screen
     end
   end
