@@ -30,7 +30,7 @@ end
 def choose_simulation_speed
   puts 'Give simulation speed in seconds :'
 
-  user_input
+  gets.chomp.to_f
 end
 
 against_ai = choose_player_or_ai
