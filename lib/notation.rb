@@ -5,9 +5,10 @@ require_relative 'move_validator'
 # Notation module that contains operations on algebraic notation and indexes
 module Notation
   include MoveValidator
-  NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?(?<check?>[#+])?$/u.freeze
+  NOTATION = /^(?<piece>(?<_>[KBNQR][a-h]?[1-8]?)|[a-h])?(?:(?<=[a-h])x|x?)(?<final_position>[a-h][1-8])(?<promotion>=?[KBNQR])?(?<check?>[#+])?$/.freeze
   CASTLE_NOTATION = /^O-O(?:-O)?$/.freeze
   COORDINATES = /^[a-h][1-8]$/.freeze
+
   def to_coordinates(row, column)
     raise ArgumentError unless [row, column].all?(Integer)
 
@@ -30,9 +31,14 @@ module Notation
     algebraic.match(NOTATION) || algebraic.match(CASTLE_NOTATION)
   end
 
+  def sanitize_input(input)
+    input.encode('UTF-8', 'UTF-8', invalid: :replace, replace: '')
+  end
+
   def correct_notation?(algebraic)
     raise ArgumentError unless algebraic.is_a? String
 
+    algebraic = sanitize_input(algebraic)
     algebraic.match?(NOTATION) || algebraic.match?(CASTLE_NOTATION)
   end
 

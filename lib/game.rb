@@ -39,7 +39,7 @@ class Game
 
       make_move(user_choice, move_notation)
       next_player_turn
-      sleep(0.4) if @player.all? { |players| players.instance_of? Computer }
+      sleep(@speed) if @player.all? { |players| players.instance_of? Computer }
       ClearScreen.clear_screen
     end
   end
