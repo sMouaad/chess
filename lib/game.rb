@@ -12,7 +12,7 @@ class Game
   include Commands
   attr_reader :current_player
 
-  def initialize(against_ai, player_one)
+  def initialize(against_ai, player_one, speed)
     @board = Board.new
     @player = if against_ai == 2
                 player_one ? [Human.new, Computer.new] : [Computer.new, Human.new]
@@ -23,6 +23,7 @@ class Game
               end
     @current_player = 0
     @reversed_board = (player_one.nil? || player_one ? false : true)
+    @speed = speed
   end
 
   def start

@@ -27,10 +27,19 @@ def choose_player_or_ai
   human_or_ai
 end
 
+def choose_simulation_speed
+  puts 'Give simulation speed in seconds :'
+
+  user_input
+end
+
 against_ai = choose_player_or_ai
 ClearScreen.clear_screen
 
 player_one = choose_player == 1 if against_ai == 2
 ClearScreen.clear_screen
-game = Game.new(against_ai, player_one)
+
+speed = against_ai == 3 ? choose_simulation_speed : 0
+ClearScreen.clear_screen
+game = Game.new(against_ai, player_one, speed)
 game.start
